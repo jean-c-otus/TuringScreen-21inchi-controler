@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.turing_data/
+*.log
+build/
+dist/
+.build-venv/

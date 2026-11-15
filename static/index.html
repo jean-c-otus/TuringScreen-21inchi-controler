@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Turing Studio V3.3 · 水冷屏幕编辑台</title>
+<style>
+:root{--bg:#090e16;--panel:#121b27;--panel2:#182431;--edge:#2a3c49;--txt:#ebf7f5;--sub:#8caaa9;--accent:#b9f1d4;--a2:#63c7b1;--warm:#e7b989;--error:#ff998b;--radius:20px}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 65% 40% at 78% 0%,#1b3740 0%,transparent 70%),var(--bg);color:var(--txt);font:14px/1.55 system-ui,-apple-system,"Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.38;cursor:not-allowed}a{color:var(--accent)}
+.page{max-width:1250px;margin:0 auto;padding:30px 36px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:25px;border-bottom:1px solid #ffffff1a}
+.logo{display:flex;align-items:center;gap:12px}.logo-mark{width:39px;height:39px;display:grid;place-items:center;border:1px solid #659589;border-radius:13px;background:#18332e;font-weight:900;font-size:19px;color:var(--accent)}
+.brand{font-weight:770;font-size:17px;letter-spacing:.6px}.brand small{display:block;font-size:10px;font-weight:500;color:var(--sub);letter-spacing:2px}
+.device{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--edge);border-radius:99px;background:#15222b;color:var(--sub);font-size:12px;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#738283;box-shadow:0 0 0 3px #ffffff09}.dot.online{background:#81dfaa;box-shadow:0 0 12px #81dfaa70}
+.intro{margin:33px 0 26px;display:flex;align-items:end;justify-content:space-between;gap:22px}h1{font-size:clamp(28px,3.5vw,42px);font-weight:760;letter-spacing:-1px;line-height:1.2;margin:0 0 12px}.intro p{color:var(--sub);max-width:570px;margin:0}.eyebrow{color:var(--a2);font-size:11px;font-weight:750;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px}
+.version{border:1px solid var(--edge);padding:7px 12px;border-radius:8px;color:var(--sub);white-space:nowrap;font-size:11px}
+.columns{display:grid;grid-template-columns:minmax(290px,0.93fr) minmax(400px,1.07fr);gap:20px;align-items:start}
+.panel{background:linear-gradient(155deg,#192530,#121b26 63%);border:1px solid #ffffff13;border-radius:var(--radius);box-shadow:0 18px 45px #0003;overflow:hidden}
+.panel-head{padding:20px 23px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff10}
+.panel-title{font-size:14px;font-weight:680}.step{font-size:11px;border:1px solid #50675f;border-radius:30px;padding:3px 9px;color:var(--accent);letter-spacing:.5px}
+.controls{padding:22px}
+.drop{border:1.5px dashed #537268;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#294c4b 0,transparent 78%),#11232a;padding:32px 18px;text-align:center;transition:.18s}
+.drop.drag{border-color:var(--accent);background:#21423c}
+.upload-ico{width:52px;height:52px;border-radius:15px;background:#ffffff0a;display:grid;place-items:center;margin:0 auto 13px;font-size:25px;color:var(--accent)}
+.drop strong{font-size:15px}.drop p{color:var(--sub);font-size:12px;margin:5px 0 17px}
+.mini{font-size:11px;color:#75928f;margin-top:12px}
+input[type=file]{display:none}
+.action{border:0;background:var(--accent);border-radius:11px;color:#0e2c26;font-weight:750;padding:11px 18px;transition:transform .15s,filter .15s}
+.action:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px)}
+.soft{border:1px solid #3b555a;background:#23333c;color:#d7e9e8;border-radius:11px;font-weight:650;padding:11px 15px}
+.soft:hover:not(:disabled){border-color:#8fc7b5}
+.rowtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:25px 0 12px}
+.rowtop span{font-size:13px;font-weight:670}.rowtop small{font-size:11px;color:var(--sub)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:7px}
+.field label{color:var(--sub);font-size:11px}
+select,input[type=color],.field input[type=number]{background:#101c27;border:1px solid #3c5059;color:var(--txt);border-radius:10px;min-height:40px;padding:0 10px;width:100%;outline:none}
+select:focus,input[type=color]:focus,.field input[type=number]:focus{border-color:var(--a2)}
+input[type=color]{padding:5px}
+.rangewrap{display:flex;align-items:center;gap:11px}.rangewrap input{flex:1;accent-color:var(--a2)}.rangewrap b{font-size:12px;min-width:34px;text-align:right}
+.hint{background:#1d2d34;border:1px solid #3c575a;border-radius:12px;padding:11px 13px;margin-top:17px;color:#a8c8c6;font-size:11px}
+.buttons{display:flex;gap:10px;margin-top:20px}.buttons>*{flex:1}
+.preview-actions{margin:20px 24px}
+.preview-panel{padding:0}.screen-stage{min-height:448px;display:flex;align-items:center;justify-content:center;padding:24px 32px 13px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 48%,#24434a 0,#12232d 44%,transparent 72%)}
+.screen-stage::after{content:"";position:absolute;width:75%;height:20%;bottom:-10%;background:#000;opacity:.25;filter:blur(40px);pointer-events:none}
+.screen-frame{position:relative;width:min(365px,100%);aspect-ratio:1;border-radius:50%;padding:17px;background:conic-gradient(from 210deg,#182b33,#829293 12%,#20323b 31%,#334650 50%,#a0ada3 71%,#1c3135 88%,#162930);box-shadow:0 19px 45px #000a,0 0 0 1px #b1c1c466,inset 0 0 4px 2px #000;z-index:1}
+.screen-glass{height:100%;width:100%;border-radius:50%;position:relative;overflow:hidden;background:#0a101b;border:6px solid #070d15;box-shadow:inset 0 0 45px #0009,0 0 0 1px #000}
+.screen-glass>img,.screen-glass>video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:none;z-index:0}
+.screen-glass.has-media>img,.screen-glass.has-media>video.active{display:block}
+.screen-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:radial-gradient(circle at 45% 25%,#283b46,#0c141d 72%);color:#71999b}
+.screen-placeholder .rings{width:78px;height:78px;border-radius:50%;border:1px dashed #5e8c83;display:grid;place-items:center;color:#a9d6c4;margin-bottom:4px;font-size:28px;box-shadow:0 0 0 17px #263a462a,0 0 0 34px #29444f19}
+.screen-placeholder strong{color:#d5eae5;font-size:14px;font-weight:600}.screen-placeholder small{font-size:11px}
+.screen-glass.has-media .screen-placeholder{display:none}
+.screen-shine{position:absolute;inset:0;border-radius:50%;background:linear-gradient(133deg,#ffffff16 1%,transparent 20%,transparent 62%,#ffffff09 100%);pointer-events:none}
+.preview-meta{text-align:center;color:var(--sub);font-size:11px;margin:4px 10px 22px}
+.status-area{padding:21px 24px 24px;border-top:1px solid #ffffff14;background:#141f29}
+.status-title{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.status-label{color:var(--accent);font-size:11px}
+.status-msg{color:var(--sub);font-size:12px;min-height:20px;word-break:break-word}
+.track{width:100%;background:#334248;height:5px;overflow:hidden;border-radius:10px;margin:17px 0}.fill{width:0;height:100%;background:linear-gradient(90deg,#4aafac,#baf2d1);transition:width .25s}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:20px;color:#688481;font-size:11px;border-top:1px solid #ffffff0d;margin-top:31px;padding-top:21px}
+.err{color:var(--error)!important}.good{color:var(--accent)!important}
+/* Free-form crop editor */
+.free-controls{display:none;border:1px solid #41645d;background:#152e30;border-radius:14px;padding:14px 15px;margin-top:18px}
+.free-controls.visible{display:block}
+.free-controls .rangewrap{display:flex;gap:11px}
+.free-controls input[type=range]{width:100%;min-width:0;accent-color:var(--accent)}
+.zoom-btn{width:34px;height:34px;flex-shrink:0;display:grid;place-items:center;border:1px solid #50726c;border-radius:9px;background:#1e4541;color:var(--accent);font-size:18px}
+.rangefoot{display:flex;justify-content:space-between;align-items:center;color:var(--sub);font-size:11px;margin-top:7px}
+.rangefoot button{background:transparent;color:var(--accent);border:0;font-size:11px;padding:2px 0}
+.mount-field{margin-top:18px}
+.mount-field small{font-size:11px;color:var(--sub);line-height:1.5}
+#editCanvas,#interactionLayer{position:absolute;inset:0;width:100%;height:100%;display:none}
+#editCanvas{z-index:2;pointer-events:none}
+#sourceMedia{position:absolute;inset:0;z-index:1;display:none;overflow:hidden}
+#sourceMedia>img,#sourceMedia>video{position:absolute;max-width:none;max-height:none;object-fit:fill;transform-origin:center}
+#interactionLayer{z-index:4;touch-action:none;cursor:grab}
+#interactionLayer:active{cursor:grabbing}
+#screen.live-edit #imagePreview,#screen.live-edit #videoPreview{visibility:hidden}
+#screen.live-edit #editCanvas{display:block}
+#screen.live-edit #sourceMedia{display:block}
+#screen.free-active #interactionLayer{display:block}
+.screen-shine{z-index:5}
+.preview-hint{text-align:center;font-size:11px;color:var(--a2);margin:-12px 15px 20px;min-height:20px}
+#previewHint:empty{display:none}
+#reconnect{font-size:11px}
+@media(max-width:850px){.page{padding:20px 15px}.columns{grid-template-columns:1fr}.intro{align-items:start;flex-direction:column}.screen-stage{min-height:370px}.screen-frame{width:min(300px,90%)}}
+@media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.controls{padding:14px}.panel-head{padding:17px}.screen-stage{min-height:345px}.device{font-size:10px}}
+
+.layer-head{margin:25px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.layer-tools{display:flex;gap:5px;flex-wrap:wrap}
+.small{font-size:10px;padding:6px 8px;border-radius:7px}
+.layer-items{display:flex;flex-wrap:wrap;gap:7px;min-height:32px}
+.empty-layers{color:var(--sub);font-size:11px}
+.layer-pill{border-radius:8px;border:1px solid #405761;background:#1d3039;color:var(--txt);padding:7px 10px;font-size:11px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.layer-pill.selected{background:#2b514c;border-color:var(--accent);color:#e6fff2}
+.layer-editor{display:none;background:#122d2d;border:1px solid #3e6b5d;border-radius:12px;padding:14px;margin-top:12px}
+.layer-editor.visible{display:block}
+.layer-editor input[type=text],.layer-editor input[type=number]{background:#0d2024;color:var(--txt);border:1px solid #49665e;border-radius:9px;padding:9px;width:100%;min-width:0}
+.layer-delete{background:transparent;color:#f1a5a0;font-size:11px;border:0;cursor:pointer}
+.bench-results{border:1px solid #3d5d5b;color:#a5d2c6;background:#132831;border-radius:10px;margin:-5px 25px 18px;padding:9px 12px;font-size:11px}
+.preview-panel .status-area{padding-top:20px}
+.screen-glass:has(.live-edit) {cursor:crosshair}
+#interactionLayer{display:none}
+#screen.free-active #interactionLayer{display:block}
+#screen.layer-active #interactionLayer{display:block}
+
+
+/* Individual typography controls */
+.font-library{margin:10px 0 14px;padding:11px 13px;border:1px solid #42685f;
+ border-radius:12px;background:#16322f;display:flex;align-items:center;
+ justify-content:space-between;gap:12px;flex-wrap:wrap}
+.font-library strong{font-size:12px;color:var(--accent);display:block}
+.font-library .mini{margin:0;display:block}
+.layer-style-grid{margin-top:10px}
+.section-mini{font-weight:700;font-size:12px;color:var(--accent);
+ border-top:1px solid #46675a60;margin:17px 0 6px;padding-top:13px}
+.toggle-list{display:flex;align-items:center;gap:15px;flex-wrap:wrap;
+ margin:12px 0;color:#c0ddd6;font-size:11px}
+.toggle-list label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.toggle-list input{accent-color:var(--accent)}
+.layer-style-grid input[type=range]{accent-color:var(--accent);min-width:0;width:100%;height:34px}
+.layer-style-grid input[type=number]{background:#0d2024;color:var(--txt);
+ border:1px solid #49665e;border-radius:9px;padding:9px;width:100%;min-width:0}
+#layerFont{max-width:100%}
+
+
+/* Persistent local workspace */
+.project-toolbar{display:flex;gap:12px;align-items:end;flex-wrap:wrap;
+ background:#14252b;border:1px solid #35534e;border-radius:15px;
+ padding:14px 16px;margin:17px 0 22px}
+.project-field{display:flex;flex-direction:column;gap:5px;min-width:195px;flex:1}
+.project-field>span{color:#91b6ad;font-size:11px}
+.project-field select,.project-field input{
+ min-height:40px;width:100%;border-radius:9px;border:1px solid #435f5b;
+ background:#0f1f27;color:#f3fff7;padding:0 11px;font:inherit}
+.project-name-field{flex:1.25}
+#desktopSettings .toggle-list label{white-space:nowrap}
+#desktopSettings input[type=checkbox]{width:16px;height:16px;min-height:0;margin:0;padding:0;flex:0 0 16px}
+.project-actions{display:flex;gap:7px}.project-actions button{white-space:nowrap;padding:10px}
+.save-status{color:#9cc7b8;font-size:11px;min-width:145px;display:flex;
+ align-items:center;gap:7px;padding:11px 0 9px}
+.save-dot{width:8px;height:8px;background:#82cca8;border-radius:50%}
+.save-status.pending{color:#ecc39a}.save-status.pending .save-dot{background:#ecc39a}
+.save-status.error{color:#f49b9b}.save-status.error .save-dot{background:#f49b9b}
+#sensorPrefixField,#sensorSuffixField,#sensorDecimalsField{display:none}
+#sensorPrefixField input,#sensorSuffixField input{
+ background:#0d2024;color:var(--txt);border:1px solid #49665e;
+ border-radius:9px;padding:9px;width:100%;min-width:0}
+@media(max-width:600px){.project-toolbar{align-items:stretch}
+ .project-field{min-width:100%}.project-actions{width:100%}.project-actions>*{flex:1}}
+
+
+/* Keep the PREVIEW visible while the taller left-hand editor scrolls.
+   The display dimensions, layout column ratio, and circle aspect ratio
+   remain unchanged. Sticky is naturally disabled in stacked mobile view. */
+@media (min-width:851px) {
+  .columns > .preview-panel {
+    position: sticky;
+    top: 16px;
+    align-self: start;
+    z-index: 3;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+ <div class="logo"><div class="logo-mark">T</div><div class="brand">TURING STUDIO<small>DISPLAY CONTROL / LOCAL</small></div></div>
+ <div class="device"><span class="dot" id="deviceDot"></span><span id="deviceText">检测 USB 屏幕中…</span></div>
+</header>
+<section class="intro">
+ <div><div class="eyebrow">PERSONAL DISPLAY WORKSPACE</div><h1>让水冷屏，显示你的风格。</h1><p>从图片到短视频，先在浏览器里完成裁切与实时预览，确认满意后再发送到 2.1 英寸图灵智显。</p></div>
+ <div class="version">V3.3 · REV C · 480 × 480 · LIBUSB</div>
+</section>
+<div class="project-toolbar" id="projectToolbar">
+  <div class="project-field">
+    <span>已保存方案 · 加载时自动复制为临时草稿</span>
+    <select id="projectSelect" aria-label="选择已保存的方案"><option value="">新建方案 / 尚无方案</option></select>
+  </div>
+  <div class="project-field project-name-field">
+    <span>方案名称</span>
+    <input id="projectName" type="text" maxlength="120" placeholder="例如：监控面板 · 深色" autocomplete="off">
+  </div>
+  <div class="project-actions">
+    <button class="action" type="button" id="renameProject">保存名称 · 新建持久方案</button>
+    <button class="soft" type="button" id="deleteProject">删除已保存版本</button>
+  </div>
+  <div id="saveStatus" class="save-status"><span class="save-dot"></span>临时草稿，尚未保存为持久方案</div>
+</div>
+<section id="desktopSettings" class="project-toolbar" style="display:none" aria-label="运行与启动设置">
+  <div class="project-field">
+    <span>运行与启动</span>
+    <div class="toggle-list" style="margin:6px 0">
+      <label><input id="startAtLogin" type="checkbox"> Start at login · 登录时启动</label>
+      <label><input id="silentStart" type="checkbox"> 静默启动 · 仅显示托盘</label>
+    </div>
+    <span id="desktopNotice">启动后自动恢复上次发送；关闭窗口后继续在托盘运行。</span>
+  </div>
+  <button class="soft" type="button" id="hideToTray">收起到托盘</button>
+</section>
+<div class="columns">
+ <section class="panel">
+  <div class="panel-head"><span class="panel-title">素材与画面设置</span><span class="step">01 / 编辑</span></div>
+  <div class="controls">
+   <div id="drop" class="drop">
+     <div class="upload-ico">↥</div><strong>拖入图片或视频</strong>
+     <p id="fileName">支持 PNG、JPG、WebP、GIF 动图、MP4、MOV、WebM 等</p>
+     <button type="button" class="soft" id="choose">选择文件</button>
+     <input id="file" type="file" accept=".png,.jpg,.jpeg,.webp,.bmp,.mp4,.mov,.mkv,.webm,.avi,.gif,image/*,video/*">
+     <div class="mini">文件不超过 80 MB · 视频最多处理前 20 秒</div>
+   </div>
+   <div class="rowtop"><span>画面适配</span><small>输出尺寸固定 480 × 480</small></div>
+   <div class="grid">
+      <div class="field"><label for="fit">画面填充</label><select id="fit"><option value="cover">铺满 · 中心裁切</option><option value="contain">完整 · 留边</option><option value="free">自由裁切 · 拖动缩放</option></select></div>
+      <div class="field"><label for="rotation">素材旋转（°，顺时针）</label><input id="rotation" type="number" step="any" value="0" title="自由输入角度，支持小数和负数"></div>
+      <div class="field"><label for="background">留边背景色</label><input id="background" type="color" value="#101827"></div>
+      <div class="field" id="videoField"><label for="fps">GIF / 视频播放帧率</label><div class="rangewrap"><input id="fps" type="range" min="1" max="30" step="1" value="2"><b id="fpsLabel">2 FPS</b></div><small class="mini" style="margin:0">修改后重新渲染；内部 MCU 可用 1–30 FPS，电脑逐帧发送可用 1–8 FPS。</small></div>
+   </div>
+   <div class="free-controls" id="freeControls">
+      <div class="rowtop" style="margin:0 0 12px"><span>圆形自由裁切</span><small>在右侧圆屏里拖动素材</small></div>
+      <div class="rangewrap">
+        <button type="button" class="zoom-btn" id="zoomOut" aria-label="缩小">−</button>
+        <input type="range" id="zoom" min="0.35" max="4" step="0.01" value="1" aria-label="画面缩放">
+        <button type="button" class="zoom-btn" id="zoomIn" aria-label="放大">＋</button>
+        <b id="zoomLabel">100%</b>
+      </div>
+      <div class="rangefoot"><span>滚轮缩放 · 拖动定位</span><button type="button" id="center">↺ 居中复位</button></div>
+   </div>
+   <div class="field mount-field">
+      <label for="mount">水冷头物理安装角度（独立于素材旋转）</label>
+      <select id="mount">
+        <option value="0">正常安装 · 0°</option>
+        <option value="90" selected>逆时针 90° · 我的安装方式</option>
+        <option value="180">倒装 · 180°</option>
+        <option value="270">顺时针 90°</option>
+      </select>
+      <small>图片和额外图层补偿完整安装角度；MCU 视频背景的补偿为“安装角度 − 90°”，再叠加素材旋转。</small>
+   </div>
+   <div class="layer-head">
+      <div><span class="panel-title">叠加图层</span><div class="mini">可拖动放置文字、符号或实时传感器</div></div>
+      <div class="layer-tools">
+        <button class="soft small" type="button" id="addText">＋ 文字</button>
+        <button class="soft small" type="button" id="addSymbol">＋ 符号</button>
+        <button class="soft small" type="button" id="addSensor">＋ 传感器</button>
+      </div>
+   </div>
+   <div class="font-library">
+     <div><strong>字体库</strong><span class="mini" id="fontLibraryInfo">自动载入已保存字体</span></div>
+     <div>
+       <button class="soft small" type="button" id="chooseFont">＋ 上传 TTF / OTF / TTC</button>
+       <input type="file" id="fontUpload" accept=".ttf,.otf,.ttc" hidden>
+     </div>
+   </div>
+   <div class="layer-items" id="layerList"><span class="empty-layers">暂无图层。添加后可在右侧圆屏拖动它。</span></div>
+   <div class="layer-editor" id="layerEditor">
+      <div class="rowtop" style="margin:0 0 12px"><span id="layerEditorTitle">编辑图层</span><button class="layer-delete" id="deleteLayer" type="button">删除图层</button></div>
+      <div class="grid">
+        <div class="field" id="textField"><label for="layerText">内容</label><input id="layerText" type="text" maxlength="80" placeholder="输入文字或符号"></div>
+        <div class="field" id="metricField"><label for="layerMetric">传感器指标</label><select id="layerMetric">
+           <option value="cpu_temp">CPU 温度</option><option value="cpu_load">CPU 使用率</option>
+           <option value="gpu_temp">GPU 温度</option><option value="gpu_load">GPU 使用率</option>
+           <option value="gpu_memory">显存使用率</option><option value="ram">内存使用率</option>
+           <option value="clock">动态时钟（每秒更新）</option>
+        </select></div>
+        <div class="field"><label for="layerSize">字号 (px)</label><input id="layerSize" type="number" min="12" max="100" value="30"></div>
+        <div class="field"><label for="layerColor">颜色</label><input id="layerColor" type="color" value="#ffffff"></div>
+        <div class="field"><label for="layerX">X 坐标</label><input id="layerX" type="number" min="0" max="479" value="150"></div>
+        <div class="field"><label for="layerY">Y 坐标</label><input id="layerY" type="number" min="0" max="479" value="220"></div>
+        <div class="field" id="sensorPrefixField"><label for="sensorPrefix">数值前文本（可自由改）</label>
+          <input id="sensorPrefix" type="text" maxlength="60" placeholder="例如 CPU 使用率 "></div>
+        <div class="field" id="sensorSuffixField"><label for="sensorSuffix">数值后文本（可自由改）</label>
+          <input id="sensorSuffix" type="text" maxlength="30" placeholder="例如 % / ℃ / load"></div>
+        <div class="field" id="sensorDecimalsField"><label for="sensorDecimals">数值小数位</label>
+          <select id="sensorDecimals"><option value="0">整数</option>
+           <option value="1" selected>1 位</option><option value="2">2 位</option></select></div>
+
+      </div>
+      <div class="section-mini">字体与排版（每个图层独立设置）</div>
+      <div class="grid layer-style-grid">
+        <div class="field"><label for="layerFont">字体</label><select id="layerFont"><option value="default">系统默认字体</option></select></div>
+        <div class="field"><label for="layerWeight">字重</label><select id="layerWeight"><option value="400">常规</option><option value="700">加粗</option></select></div>
+        <div class="field"><label for="layerAlign">文字对齐</label><select id="layerAlign"><option value="left">左对齐</option><option value="center">居中</option><option value="right">右对齐</option></select></div>
+        <div class="field"><label for="layerTracking">字间距 (px)</label><input id="layerTracking" type="number" min="-2" max="20" step="0.5" value="0"></div>
+        <div class="field"><label for="layerOutline">描边宽度 (px)</label><input id="layerOutline" type="range" min="0" max="5" step="1" value="0"></div>
+        <div class="field"><label for="layerOutlineColor">描边颜色</label><input id="layerOutlineColor" type="color" value="#15202b"></div>
+        <div class="field"><label for="layerOpacity">不透明度 (%)</label><input id="layerOpacity" type="range" min="20" max="100" step="5" value="100"></div>
+        <div class="field"><label for="layerBackgroundColor">标签底色</label><input id="layerBackgroundColor" type="color" value="#15202b"></div>
+      </div>
+      <div class="toggle-list">
+        <label><input id="layerItalic" type="checkbox"> 斜体</label>
+        <label><input id="layerShadow" type="checkbox"> 阴影</label>
+        <label><input id="layerBackground" type="checkbox"> 显示文字底色</label>
+      </div>
+      <div class="mini">文字、符号与传感器都使用独立样式。右侧 Canvas 是即时编辑预览；「应用修改」后 Pillow 合成结果才是屏幕真实画面。动态时钟可直接验证局部刷新。</div>
+   </div>
+   <div class="rowtop"><span>动态播放与带宽</span><small>真实 USB 传输预检</small></div>
+   <div class="grid">
+      <div class="field"><label for="playPolicy">性能不足时</label><select id="playPolicy">
+        <option value="auto">自动降帧（推荐）</option>
+        <option value="strict">阻止播放</option>
+      </select></div>
+      <div class="field"><label for="transport">USB 刷新策略</label><select id="transport">
+        <option value="device" selected>内部MCU为主刷新（默认）</option>
+        <option value="full">调试 · 固定全屏 · 只发 0xC8</option>
+        <option value="partial">调试 · 固定局部 · 只发 0xCC</option>
+      </select></div>
+      <div class="field"><label for="bench">真实 USB 吞吐量</label><button type="button" id="bench" class="soft">测速 + 动态刷新验证</button></div>
+   </div>
+   <div class="hint" id="strategyNotice">USB 策略不会自动切换。全屏和局部策略由电脑逐帧发送；内部 MCU 策略将 GIF / 视频上传到屏幕播放，电脑只更新额外图层。</div>
+  <div class="hint" id="benchHint">测速将发送背景，显示彩色 TEST 标记并恢复原图，以观察局部刷新是否生效。GIF / 视频发送前自动预检帧率。</div>
+   <div class="hint">⌁ 修改裁切或图层后需点击「应用修改并预览」；最后发送的是 Python 合成后的画面。CPU/GPU 传感器值来自本机。</div>
+  </div>
+ </section>
+ <section class="panel preview-panel">
+  <div class="panel-head"><span class="panel-title">设备画面预览</span><span class="step">02 / 预览确认</span></div>
+  <div class="screen-stage">
+    <div class="screen-frame"><div id="screen" class="screen-glass">
+      <div class="screen-placeholder"><div class="rings">◎</div><strong>等待画面</strong><small>480 × 480 · Circular view</small></div>
+      <img id="imagePreview" alt="处理后的屏幕预览">
+      <video id="videoPreview" muted autoplay loop playsinline></video>
+      <div id="sourceMedia" aria-hidden="true"></div>
+      <canvas id="editCanvas" width="480" height="480" aria-label="圆形裁切画布"></canvas>
+      <div id="interactionLayer" title="拖动平移，滚轮缩放"></div>
+      <div class="screen-shine"></div>
+    </div></div>
+  </div>
+  <div class="preview-meta" id="previewMeta">圆形遮罩预览 · 实际设备使用 480 × 480 图像数据</div>
+  <div class="preview-hint" id="previewHint">◎ 自由裁切可拖动背景；添加图层后可拖动文字或传感器。</div>
+  <div class="buttons preview-actions">
+    <button type="button" class="soft" id="render" disabled>↻ 应用修改并预览</button>
+    <button type="button" class="action" id="send" disabled>发送到屏幕 →</button>
+  </div>
+  <div class="bench-results" id="benchResults">USB 吞吐量：待测</div>
+  <div class="preview-hint" id="frameStats">实际帧：尚未发送</div>
+  <div class="preview-hint" id="playbackStats">GIF / 视频目标帧率可在左侧设置；发送后显示实际帧率。</div>
+  <div class="status-area">
+    <div class="status-title"><span>传输状态</span><span class="status-label" id="jobState">待机</span></div>
+    <div class="status-msg" id="jobMessage">上传并生成预览后，即可手动发送至水冷屏。</div>
+    <div class="mini err" id="retryNotice" style="display:none" role="status"></div>
+    <div class="track"><div class="fill" id="progress"></div></div>
+    <div class="buttons" style="margin-top:0">
+      <button class="soft" id="stop" disabled>■ 停止发送</button>
+      <button class="soft" id="reconnect">↻ USB 手动重连</button>
+      <button class="soft" id="refresh">检测设备</button>
+    </div>
+    <div class="mini" id="deviceCheck" role="status"></div>
+  </div>
+ </section>
+</div>
+<footer class="foot"><span>TURING STUDIO / ARCH LINUX · 用户数据目录自动保存 · 本地处理，不发送到互联网</span><span>127.0.0.1 · USB 持久连接 · 自由圆屏裁切</span></footer>
+</div>
+<script>
+
+
+
+
+
+
+
+// Turing Studio V3.3 – local client; the final send always uses Python-rendered output.
+let csrf = "", media = null, dirty = false, busy = false, uploadRunning = false;
+let sourceUrl = null, rawSource = null, sourceReady = false;
+let sourceKind = "", sourceLoadId = 0;
+let overlays=[], selectedOverlay=-1, sensorValues={};
+let pointerMode=null, overlayStart=null;
+let projects=[], autoSaveTimer=null, editGeneration=0, renderRunning=false;
+let selectingProject=false;
+let fontChoices=[], loadedFontIds=new Set(), exampleFound=false;
+let lastJobState = "idle";
+let desktopOptions = null;
+const $ = id => document.getElementById(id);
+const canvas = $("editCanvas"), ctx = canvas.getContext("2d", {alpha: true});
+const layer = $("interactionLayer");
+const pointers = new Map();
+let dragPoint = null, pinch = null;
+
+function settings() {
+  return {
+    fit: $("fit").value, rotation: Number($("rotation").value || 0),
+    background: $("background").value, fps: $("fps").value,
+    zoom: $("zoom").value, offset_x: cropX, offset_y: cropY
+  };
+}
+let cropX = 0, cropY = 0;
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function setZoom(value, mark = true) {
+  const zoom = clamp(Number(value) || 1, .35, 4);
+  $("zoom").value = zoom.toFixed(2);
+  $("zoomLabel").textContent = Math.round(zoom * 100) + "%";
+  if (mark) changed();
+}
+function showFree() {
+  const active = $("fit").value === "free";
+  $("freeControls").classList.toggle("visible", active);
+  $("screen").classList.toggle("free-active", active && !!sourceReady);
+  $("screen").classList.toggle("layer-active", overlays.length>0 && !!sourceReady);
+}
+async function api(path, options = {}) {
+  const headers = {...(options.headers || {})};
+  if (options.method === "POST") headers["X-Turing-Token"] = csrf;
+  if (options.json) {
+    headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify(options.json);
+    delete options.json;
+  }
+  const response = await fetch("/api/" + path, {...options, headers, cache:"no-store"});
+  const data = await response.json();
+  if (!response.ok) throw Error(data.error || "请求失败");
+  return data;
+}
+function message(txt, error = false) {
+  $("jobMessage").textContent = txt;
+  $("jobMessage").className = "status-msg" + (error ? " err" : "");
+}
+function refreshButtons() {
+  const activeVideo = busy && lastJobState!=="live";
+  const deviceMode = $("transport").value==="device";
+  $("send").disabled = busy || !media || dirty || renderRunning || uploadRunning ||
+    (!deviceMode && media.kind==="video" && Number($("fps").value)>8);
+  $("render").disabled = activeVideo || !media || renderRunning || uploadRunning;
+  $("choose").disabled = busy || uploadRunning || renderRunning;
+  $("stop").disabled = !busy;
+  $("reconnect").disabled = busy && lastJobState!=="retrying";
+  $("refresh").disabled = ["checking","reconnecting"].includes(lastJobState);
+  $("bench").disabled = deviceMode || busy || uploadRunning || renderRunning || ((!media || dirty) && !exampleFound);
+  for(const id of ["mount","transport","playPolicy"])$(id).disabled=busy;
+  const lockBackground=busy && deviceMode;
+  for(const id of ["fit","rotation","background","fps","zoom","zoomIn","zoomOut","center"])
+    $(id).disabled=lockBackground;
+  $("fps").disabled=lockBackground || media?.kind==="image";
+  $("projectSelect").disabled = busy || renderRunning || uploadRunning;
+  $("deleteProject").disabled = busy || renderRunning || uploadRunning || !media?.base_project;
+  $("renameProject").disabled = busy || renderRunning || uploadRunning || !media;
+  $("strategyNotice").textContent=deviceMode
+    ? "内部 MCU 为主刷新：图片、GIF 和视频背景上传后由屏幕显示；电脑只在额外图层变化时更新透明图层。显示中可编辑图层，修改背景或播放帧率需先停止。"
+    : "当前由电脑逐帧发送，最高 8 FPS；全屏使用 0xC8，局部使用 0xCC。策略不会自动切换。";
+  $("playPolicy").disabled=busy || deviceMode;
+  $("benchHint").textContent=deviceMode
+    ? "屏幕本地播放无需逐帧 USB 带宽预检。首次发送包含转码与文件上传；相同背景可复用已上传文件。"
+    : "测速将显示 TEST 标记并还原。电脑逐帧发送前会预检 USB 带宽；帧率超过 8 FPS 时请选择内部 MCU 策略或降低帧率。";
+}
+function setSaveLabel(text,state="") {
+  const el=$("saveStatus");
+  el.className="save-status"+(state?" "+state:"");
+  el.lastChild.textContent=text;
+}
+function scheduleAutoRender(delay=550) {
+  if(!media) return;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>renderNow(),delay);
+}
+function changed() {
+  if(media){
+    dirty=true;
+    editGeneration++;
+    setSaveLabel("临时草稿 · 正在更新预览（未保存持久方案）","pending");
+    message("正在准备最新的 Python 合成画面…");
+    $("jobState").textContent="方案已修改";
+    scheduleAutoRender();
+    refreshButtons();
+  }
+  if(sourceReady)drawEditor();
+}
+
+function drawEditor() {
+  if (!sourceReady || !rawSource) return;
+  const w = rawSource.videoWidth || rawSource.naturalWidth || 0;
+  const h = rawSource.videoHeight || rawSource.naturalHeight || 0;
+  if (w === 0 || h === 0) return;
+  const rotation = Number($("rotation").value || 0) % 360;
+  const radians = rotation * Math.PI / 180;
+  const cosine = Math.abs(Math.cos(radians)), sine = Math.abs(Math.sin(radians));
+  let rw, rh;
+  if(rotation % 90 === 0){
+    rw = rotation % 180 === 0 ? w : h;
+    rh = rotation % 180 === 0 ? h : w;
+  } else {
+    // Match Pillow's expanded rotation rectangle, including odd dimensions.
+    const bw = w*cosine + h*sine, bh = w*sine + h*cosine;
+    rw = Math.ceil(w/2+bw/2)-Math.floor(w/2-bw/2);
+    rh = Math.ceil(h/2+bh/2)-Math.floor(h/2-bh/2);
+  }
+  const fit = $("fit").value;
+  let scale = fit === "contain"
+    ? Math.min(480/rw, 480/rh)
+    : Math.max(480/rw, 480/rh);
+  if (fit === "free") scale *= Number($("zoom").value);
+  $("sourceMedia").style.backgroundColor = $("background").value;
+  Object.assign(rawSource.style, {
+    width:`${w*scale/480*100}%`,height:`${h*scale/480*100}%`,
+    left:`${50+(fit==="free"?cropX/480*100:0)}%`,
+    top:`${50+(fit==="free"?cropY/480*100:0)}%`,
+    transform:`translate(-50%,-50%) rotate(${rotation}deg)`
+  });
+  // Native image/video playback keeps GIF animation running. Only overlay
+  // graphics go on the transparent canvas, always above the source media.
+  ctx.clearRect(0,0,480,480);
+  if(rawSource instanceof HTMLVideoElement && rawSource.paused){
+    rawSource.play().catch(error=>console.warn("Source playback:",error));
+  }
+  // Draft overlay editor (Python Pillow provides the authoritative final preview).
+  ctx.textBaseline="top";
+  overlays.forEach((o,i)=>{
+    const label=overlayText(o);
+    if(!label)return;
+    ctx.save();
+    const styleWeight=o.weight||400, size=o.size||30;
+    const family=fontFamily(o.font);
+    ctx.font=`${o.italic?"italic ":""}${styleWeight} ${size}px "${family}",sans-serif`;
+    ctx.textAlign=o.align||"left";
+    ctx.letterSpacing=`${o.tracking||0}px`;
+    const measured=ctx.measureText(label).width;
+    const x=o.x,y=o.y;
+    const left=ctx.textAlign==="center"?x-measured/2:
+               ctx.textAlign==="right"?x-measured:x;
+    ctx.globalAlpha=(o.opacity||100)/100;
+    if(o.background){
+      ctx.fillStyle=o.background_color||"#15202b";
+      ctx.globalAlpha=0.65*(o.opacity||100)/100;
+      ctx.beginPath();
+      ctx.roundRect(left-9,y-7,measured+18,size+19,6);
+      ctx.fill();
+      ctx.globalAlpha=(o.opacity||100)/100;
+    }
+    if(o.shadow){
+      ctx.shadowColor="rgba(0,0,0,0.65)";
+      ctx.shadowBlur=3;ctx.shadowOffsetX=2;ctx.shadowOffsetY=2;
+    }
+    if(o.outline>0){
+      ctx.lineJoin="round";
+      ctx.lineWidth=2*o.outline;
+      ctx.strokeStyle=o.outline_color||"#15202b";
+      ctx.strokeText(label,x,y);
+    }
+    ctx.fillStyle=o.color||"#ffffff";
+    ctx.fillText(label,x,y);
+    ctx.shadowColor="transparent";ctx.shadowBlur=0;
+    ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+    ctx.globalAlpha=1;ctx.textAlign="left";
+    if(i===selectedOverlay){
+      ctx.strokeStyle="#b9f1d4";ctx.lineWidth=1;
+      ctx.setLineDash([6,4]);
+      ctx.strokeRect(left-5,y-5,measured+10,size+10);
+      ctx.setLineDash([]);
+    }
+    ctx.restore();
+  });
+  $("screen").classList.add("live-edit");
+}
+function loadLocalSource(file, kindHint=null) {
+  const loadId=++sourceLoadId;
+  if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+  if (rawSource instanceof HTMLVideoElement) rawSource.pause();
+  sourceUrl = URL.createObjectURL(file);
+  rawSource = null;
+  sourceReady = false;
+  $("sourceMedia").replaceChildren();
+  const isGif=file.type==="image/gif" || /\.gif$/i.test(file.name);
+  sourceKind = isGif ? "gif" : kindHint || (
+    file.type.startsWith("video/") || /\.(mp4|mkv|mov|webm|avi|gif)$/i.test(file.name)
+    ? "video" : "image"
+  );
+  if (sourceKind === "image" || sourceKind === "gif") {
+    const img = new Image();
+    rawSource=img;
+    $("sourceMedia").appendChild(img);
+    img.onload = () => {
+      if(loadId!==sourceLoadId)return;
+      sourceReady = true; showFree();
+      if(dirty || !media)drawEditor();
+    };
+    img.onerror = () => {
+      if(loadId!==sourceLoadId)return;
+      sourceReady = false; $("previewHint").textContent = "此格式的实时预览不可用，应用后仍可由 Python 处理";
+    };
+    img.src = sourceUrl;
+  } else {
+    const vid = document.createElement("video");
+    rawSource=vid;
+    $("sourceMedia").appendChild(vid);
+    vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+    vid.preload = "auto";
+    vid.addEventListener("loadeddata", () => {
+      if(loadId!==sourceLoadId)return;
+      sourceReady = true; showFree();
+      if(dirty || !media)drawEditor();
+      vid.play().catch(()=>{});
+    }, {once:true});
+    vid.addEventListener("error", () => {
+      if(loadId!==sourceLoadId)return;
+      sourceReady=false;
+      $("previewHint").textContent = "该视频容器无法在浏览器中直接播放；可先由 FFmpeg 生成处理后的预览";
+    });
+    vid.src = sourceUrl;
+  }
+}
+
+async function loadWorkspace() {
+  const data=await api("config");
+  projects=data.projects||[];
+  const prefs=data.preferences||{};
+  $("mount").value=String(prefs.mount_ccw??90);
+  $("transport").value=["device","full","partial"].includes(prefs.transport)?prefs.transport:"device";
+  $("playPolicy").value=prefs.policy||"auto";
+  populateProjectList(data.active);
+  if(data.project){
+    await restoreProject(data.project);
+    message(`已恢复临时草稿「${data.project.name}」，已保存的原方案没有被修改。`);
+  }else{
+    setSaveLabel("可上传素材建立临时草稿");
+  }
+}
+$("projectSelect").addEventListener("change",async ()=>{
+  const id=$("projectSelect").value;
+  if(!id||busy||renderRunning)return;
+  selectingProject=true;
+  clearTimeout(autoSaveTimer);
+  try{
+    const data=await api("config/select",{method:"POST",json:{id}});
+    projects=data.projects||projects;
+    await restoreProject(data.project);
+    message(`已复制「${data.project.name}」至独立临时草稿。控件已按保存时的配置恢复。`);
+  }catch(error){message("切换方案失败："+error.message,true);}
+  finally{selectingProject=false;}
+});
+$("renameProject").onclick=async()=>{
+  if(!media||busy)return;
+  const name=$("projectName").value.trim();
+  if(!name){message("请输入新持久方案的名称",true);return;}
+  clearTimeout(autoSaveTimer);
+  const currentId=media.id;
+  const seq=++editGeneration;
+  const currentSnapshot=JSON.parse(JSON.stringify({
+    id:currentId,name,settings:settings(),
+    layers:overlays,device:deviceValues(),sequence:seq,
+  }));
+  $("renameProject").disabled=true;
+  setSaveLabel("正在生成独立的持久方案…","pending");
+  try{
+    // The server serializes pending renders and checks the edit sequence.
+    // No previous saved manifest is ever rewritten.
+    const data=await api("config/commit",{
+      method:"POST",json:currentSnapshot,
+    });
+    projects=data.projects||projects;
+    if(media?.id!==currentId)return;
+    if(editGeneration===seq){
+      dirty=false;
+      useMedia(data.project,{keepSelection:true});
+      $("projectName").value=name;
+      message(`已创建独立持久方案「${name}」；后续修改仍只写临时草稿。`);
+      setSaveLabel(`已创建「${name}」· 编辑器仍在临时草稿`);
+    }else{
+      media={...media,base_project:data.saved.id,
+             name:data.project.name,revision:data.project.revision};
+      populateProjectList(data.saved.id);
+      scheduleAutoRender(180);
+      message(`已保存版本「${name}」，新调整仍在临时草稿中。`);
+    }
+  }catch(error){
+    message("保存持久方案失败："+error.message,true);
+    setSaveLabel("保存失败，草稿仍在","error");
+  }finally{
+    refreshButtons();
+  }
+};
+$("deleteProject").onclick=async()=>{
+  if(!media?.base_project||busy)return;
+  const savedId=media.base_project;
+  const row=projects.find(project=>project.id===savedId);
+  if(!confirm(`删除持久方案「${row?.name||savedId}」？临时草稿不受影响。`))return;
+  try{
+    const response=await api("config/delete",{
+      method:"POST",json:{id:savedId},
+    });
+    projects=response.projects||[];
+    media={...media,base_project:null};
+    populateProjectList("");
+    message("已删除所选持久方案，当前临时草稿仍然保留。");
+    setSaveLabel("临时草稿仍可编辑、保存为新方案","pending");
+    refreshButtons();
+  }catch(error){message(error.message,true);}
+};
+function populateProjectList(active) {
+  const select=$("projectSelect");
+  select.replaceChildren();
+  const placeholder=new Option("未关联已保存方案 · 当前编辑临时草稿", "");
+  select.add(placeholder);
+  for(const project of projects){
+    select.add(new Option(project.name,project.id));
+  }
+  select.value=active||"";
+}
+function deviceValues(){
+  return {
+    mount_ccw:Number($("mount").value),
+    transport:$("transport").value,
+    policy:$("playPolicy").value
+  };
+}
+function applySceneValues(data) {
+  const dev=data.device||{};
+  $("mount").value=String(dev.mount_ccw??90);
+  $("transport").value=["device","full","partial"].includes(dev.transport)?dev.transport:"device";
+  $("playPolicy").value=dev.policy||"auto";
+  const opts=data.settings||{};
+  $("fit").value=opts.fit||"cover";
+  $("rotation").value=String(opts.rotation||0);
+  $("background").value=opts.background||"#101827";
+  $("fps").value=opts.fps??2;
+  $("fpsLabel").textContent=$("fps").value+" FPS";
+  cropX=Number(opts.offset_x||0);
+  cropY=Number(opts.offset_y||0);
+  setZoom(opts.zoom??1,false);
+}
+function useMedia(data, opts={}) {
+  media=data;dirty=false;
+  overlays=(data.layers||[]).map(o=>({...o}));
+  if(!opts.keepSelection)selectedOverlay=overlays.length?0:-1;
+  if(selectedOverlay>=overlays.length)selectedOverlay=-1;
+  editGeneration=Math.max(editGeneration,Number(data.edit_seq||0));
+  applySceneValues(data);
+  if(!opts.preserveName)$("projectName").value=data.name||"";
+  populateProjectList(data.base_project||"");
+  renderLayerList();
+  if(selectedOverlay>=0)selectOverlay(selectedOverlay);
+  showFree();
+  $("fileName").textContent=data.name;
+  $("videoField").style.display="flex";
+  $("videoField").style.flexDirection="column";
+  $("screen").classList.add("has-media");
+  $("screen").classList.remove("live-edit");
+  if(rawSource instanceof HTMLVideoElement)rawSource.pause();
+  $("videoPreview").pause();
+  $("videoPreview").classList.remove("active");
+  $("videoPreview").removeAttribute("src");
+  $("imagePreview").style.display="none";
+  const url=data.preview+"?v="+Date.now();
+  if(data.kind==="image"){
+    $("imagePreview").src=url;
+    $("imagePreview").style.display="block";
+  } else {
+    $("videoPreview").src=url;
+    $("videoPreview").classList.add("active");
+    $("videoPreview").load();
+    $("videoPreview").play().catch(()=>{});
+  }
+  $("previewMeta").textContent=data.kind==="image"
+    ? `Python 实际渲染 · 480 × 480 · 草稿第 ${data.revision} 版`
+    : `Python 实际渲染 · ${data.info.duration?.toFixed(1)} 秒 · ${data.info.fps} FPS`;
+  $("previewHint").textContent="";
+  setSaveLabel(`临时草稿已更新 · 第 ${data.revision} 版`);
+  refreshButtons();
+}
+async function restoreProject(data) {
+  clearTimeout(autoSaveTimer);
+  sourceLoadId++;
+  sourceReady=false;
+  editGeneration++;
+  useMedia(data);
+  try{
+    const response=await fetch(data.source,{cache:"no-store"});
+    if(!response.ok)throw Error("HTTP "+response.status);
+    const blob=await response.blob();
+    // Restore original source for accurate free-crop editing, not a stale PNG preview.
+    if(media?.id!==data.id)return;
+    const file=new File([blob],data.name,{type:blob.type});
+    loadLocalSource(file,data.kind);
+  }catch(error){
+    sourceReady=false;
+    $("previewHint").textContent="原始素材无法在浏览器加载，但已保存的 Python 预览仍可显示。";
+    console.warn("Source restoration:",error);
+  }
+}
+async function renderNow(force=false) {
+  if(!media||(!dirty&&!force)||renderRunning||uploadRunning)return;
+  if(busy && lastJobState!=="live"){scheduleAutoRender(700);return;}
+  clearTimeout(autoSaveTimer);
+  const revision=editGeneration;
+  const projectId=media.id;
+  const snapshot=JSON.parse(JSON.stringify({id:projectId,
+    settings:settings(),layers:overlays,
+    device:deviceValues(),sequence:revision}));
+  renderRunning=true;refreshButtons();
+  setSaveLabel("Python 正在更新临时草稿…","pending");
+  try{
+    const response=await api("render",{method:"POST",json:snapshot});
+    projects=response.projects||projects;
+    // Do not overwrite newer in-progress UI edits with an older response.
+    if(media?.id!==projectId)return;
+    if(editGeneration===revision){
+      const typedName=$("projectName").value;
+      useMedia(response.project,{keepSelection:true,preserveName:true});
+      $("projectName").value=typedName;
+      message(`临时草稿已重新渲染到第 ${response.project.revision} 版，原持久方案未变化。`);
+    } else {
+      media={...media,revision:response.project.revision,
+        edit_seq:response.project.edit_seq};
+      scheduleAutoRender(180);
+    }
+  }catch(error){
+    message(error.message,true);
+    setSaveLabel("自动保存失败 · 请重试","error");
+  }finally{
+    renderRunning=false;refreshButtons();
+    if(dirty && editGeneration!==revision && media?.id===projectId)
+      scheduleAutoRender(180);
+  }
+}
+
+async function upload(file) {
+  if(!file || busy || uploadRunning || renderRunning)return;
+  if(file.size>80*1024*1024){message("文件超过 80 MB",true);return;}
+  clearTimeout(autoSaveTimer);
+  uploadRunning=true;
+  editGeneration++;
+  cropX=0;cropY=0;setZoom(1,false);
+  overlays=[];selectedOverlay=-1;
+  media=null;dirty=false;refreshButtons();
+  loadLocalSource(file);
+  $("fileName").textContent=file.name;
+  message("正在创建临时方案，Python 处理中…");
+  const form=new FormData();
+  form.append("file",file);
+  Object.entries(settings()).forEach(([key,value])=>form.append(key,value));
+  form.append("layers","[]");
+  try{
+    const data=await api("upload",{method:"POST",body:form});
+    projects=data.projects||[];
+    useMedia(data.project);
+    setSaveLabel("临时草稿已创建 · 点击「保存名称」才会成为持久方案","pending");
+  }catch(error){
+    message("创建临时草稿失败："+error.message,true);
+    setSaveLabel("临时草稿创建失败","error");
+  }finally{
+    uploadRunning=false;refreshButtons();
+  }
+}
+
+$("choose").onclick = () => $("file").click();
+$("file").onchange = e => {
+  const file=e.target.files[0];
+  e.target.value="";
+  upload(file);
+};
+for (const event of ["dragenter", "dragover"]) {
+  $("drop").addEventListener(event, e => {
+    e.preventDefault(); $("drop").classList.add("drag");
+  });
+}
+for (const event of ["dragleave", "drop"]) {
+  $("drop").addEventListener(event, e => {
+    e.preventDefault(); $("drop").classList.remove("drag");
+  });
+}
+$("drop").addEventListener("drop", e => upload(e.dataTransfer.files[0]));
+
+$("fit").onchange = () => {showFree(); changed();};
+for (const control of ["rotation", "background", "fps"]) {
+  $(control).addEventListener("input", () => {
+    if (control === "fps") $("fpsLabel").textContent = $("fps").value + " FPS";
+    changed();
+  });
+}
+$("zoom").oninput = () => setZoom($("zoom").value);
+$("zoomIn").onclick = () => setZoom(Number($("zoom").value) * 1.15);
+$("zoomOut").onclick = () => setZoom(Number($("zoom").value) / 1.15);
+$("center").onclick = () => {cropX = 0; cropY = 0; setZoom(1);};
+async function saveDevicePreferences() {
+  const preferences=deviceValues();
+  try {
+    const result=await api("config/preferences",{
+      method:"POST",json:{id:media?.id||null,preferences}
+    });
+    if(media && result.preferences)media.device=result.preferences;
+    message(`USB 和设备控件已写入临时草稿：${preferences.transport==="device"?"内部 MCU 为主刷新":preferences.transport}。`);
+    setSaveLabel("临时草稿设备控件已更新","pending");
+  }catch(error){
+    message("设备控件保存失败："+error.message,true);
+  }
+}
+
+for(const id of ["mount","transport","playPolicy"]){
+  $(id).addEventListener("change",()=>{refreshButtons();saveDevicePreferences();});
+}
+
+
+function fontFamily(fontId) {
+  return (fontId && fontId !== "default" && loadedFontIds.has(fontId))
+    ? `TuringFont_${fontId}` : "Noto Sans CJK SC";
+}
+function fillFontSelect() {
+  const select=$("layerFont"), previous=select.value;
+  select.replaceChildren();
+  const base=document.createElement("option");
+  base.value="default";base.textContent="系统默认";select.appendChild(base);
+  fontChoices.forEach(entry=>{
+    const option=document.createElement("option");
+    option.value=entry.id;option.textContent=entry.name;
+    select.appendChild(option);
+  });
+  const selected=overlays[selectedOverlay];
+  select.value=selected?.font || previous || "default";
+  if(select.selectedIndex<0) select.value="default";
+  $("fontLibraryInfo").textContent=`已保存 ${fontChoices.length} 款 · 重启后保留`;
+}
+async function reloadFonts() {
+  const result=await api("fonts");
+  fontChoices=result.fonts||[];
+  for(const font of fontChoices){
+    if(loadedFontIds.has(font.id))continue;
+    try {
+      const face=new FontFace(`TuringFont_${font.id}`,
+        `url("/api/fonts/${font.id}")`);
+      await face.load();
+      document.fonts.add(face);
+      loadedFontIds.add(font.id);
+    }catch(error){
+      console.warn("字体预览加载失败（Python 仍可渲染）",font.name,error);
+    }
+  }
+  fillFontSelect();
+  if(sourceReady)drawEditor();
+}
+$("chooseFont").onclick=()=>$("fontUpload").click();
+$("fontUpload").onchange=async event=>{
+  const file=event.target.files[0];
+  if(!file)return;
+  if(file.size>8*1024*1024){message("字体文件不能超过 8 MB",true);return;}
+  const form=new FormData();form.append("file",file);
+  try{
+    const result=await api("fonts",{method:"POST",body:form});
+    await reloadFonts();
+    if(selectedOverlay>=0){
+      overlays[selectedOverlay].font=result.font.id;
+      selectOverlay(selectedOverlay);
+      changed();
+    }
+    message(`字体「${result.font.name}」已保存到本地字体库。`);
+  }catch(error){message(`字体上传失败：${error.message}`,true);}
+  finally{$("fontUpload").value="";}
+};
+
+const metricName={
+ cpu_temp:"CPU 温度",cpu_load:"CPU 占用",
+ gpu_temp:"GPU 温度",gpu_load:"GPU 占用",
+ gpu_memory:"显存使用",ram:"内存使用",clock:"时间"
+};
+const defaultSensorText = metric => ({
+  prefix:metric==="clock"?"":(metricName[metric]||"传感器")+" ",
+  suffix:metric==="clock"?"":metric.endsWith("_temp")?"°C":"%"
+});
+function overlayText(o) {
+  if(o.type!=="sensor") return o.text;
+  const value=sensorValues[o.metric];
+  const format=defaultSensorText(o.metric);
+  const pre=o.prefix??format.prefix,post=o.suffix??format.suffix;
+  let middle;
+  if(o.metric==="clock") middle=value??"--:--:--";
+  else if(value===null||value===undefined) middle="--";
+  else middle=Number(value).toFixed(o.precision??1);
+  return pre+middle+post;
+}
+
+function renderLayerList() {
+  const list=$("layerList");
+  list.replaceChildren();
+  if(overlays.length===0){
+    const empty=document.createElement("span");
+    empty.className="empty-layers";
+    empty.textContent="暂无图层。添加后可在右侧圆屏拖动它。";
+    list.appendChild(empty);
+  }
+  overlays.forEach((o,i)=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="layer-pill"+(selectedOverlay===i?" selected":"");
+    button.textContent=`${i+1} · ${o.type==="sensor"?metricName[o.metric]:(o.text||"空图层")}`;
+    button.addEventListener("click",()=>selectOverlay(i));
+    list.appendChild(button);
+  });
+  const selected=overlays[selectedOverlay];
+  $("layerEditor").classList.toggle("visible",!!selected);
+  if(selected){
+    $("layerEditorTitle").textContent=selected.type==="text"?"文字图层":
+      selected.type==="sensor"?"传感器图层":"符号图层";
+    $("textField").style.display=selected.type==="sensor"?"none":"flex";
+    $("metricField").style.display=selected.type==="sensor"?"flex":"none";
+    for(const id of ["sensorPrefixField","sensorSuffixField","sensorDecimalsField"]){
+      $(id).style.display=selected.type==="sensor"?"flex":"none";
+    }
+  }
+  showFree();
+}
+function selectOverlay(index) {
+  if(index<0||index>=overlays.length) return;
+  selectedOverlay=index;
+  const o=overlays[index];
+  $("layerText").value=o.text;
+  $("layerMetric").value=o.metric;
+  $("layerSize").value=o.size;
+  $("layerColor").value=o.color;
+  $("layerX").value=o.x;
+  $("layerY").value=o.y;
+  const sensorFormat=defaultSensorText(o.metric);
+  $("sensorPrefix").value=o.prefix??sensorFormat.prefix;
+  $("sensorSuffix").value=o.suffix??sensorFormat.suffix;
+  $("sensorDecimals").value=String(o.precision??1);
+  $("layerFont").value=o.font||"default";
+  if($("layerFont").selectedIndex<0)$("layerFont").value="default";
+  $("layerWeight").value=String(o.weight||400);
+  $("layerItalic").checked=!!o.italic;
+  $("layerTracking").value=o.tracking??0;
+  $("layerAlign").value=o.align||"left";
+  $("layerOutline").value=o.outline??0;
+  $("layerOutlineColor").value=o.outline_color||"#15202b";
+  $("layerShadow").checked=!!o.shadow;
+  $("layerBackground").checked=!!o.background;
+  $("layerBackgroundColor").value=o.background_color||"#15202b";
+  $("layerOpacity").value=o.opacity??100;
+  renderLayerList();
+  if(sourceReady)drawEditor();
+}
+function addOverlay(kind){
+  if(overlays.length>=12){message("最多支持 12 个图层",true);return;}
+  const defaults={
+    text:"SYSTEM ONLINE",symbol:"✦",sensor:""
+  };
+  overlays.push({
+    type:kind,text:defaults[kind],metric:"cpu_temp",x:145,
+    y:Math.min(460,90+overlays.length*50),size:32,
+    color:"#b9f1d4",font:"default",weight:400,italic:false,
+    tracking:0,align:"left",outline:0,outline_color:"#15202b",
+    shadow:false,background:false,background_color:"#15202b",
+    opacity:100,prefix:kind==="sensor"?"CPU 温度 ":"",
+    suffix:kind==="sensor"?"°C":"",precision:1
+  });
+  selectOverlay(overlays.length-1);
+  changed();
+}
+$("addText").onclick=()=>addOverlay("text");
+$("addSymbol").onclick=()=>addOverlay("symbol");
+$("addSensor").onclick=()=>addOverlay("sensor");
+$("deleteLayer").onclick=()=>{
+ if(selectedOverlay<0) return;
+ overlays.splice(selectedOverlay,1);
+ selectedOverlay=overlays.length?Math.min(selectedOverlay,overlays.length-1):-1;
+ if(selectedOverlay>=0)selectOverlay(selectedOverlay);
+ else renderLayerList();
+ changed();
+};
+for(const [id,key,convert] of [
+  ["layerText","text",v=>v.slice(0,80)],
+  ["layerMetric","metric",v=>v],
+  ["layerSize","size",v=>clamp(Number(v)||30,12,100)],
+  ["layerColor","color",v=>v],
+  ["layerX","x",v=>clamp(Math.round(Number(v)||0),0,479)],
+  ["layerY","y",v=>clamp(Math.round(Number(v)||0),0,479)],
+  ["layerFont","font",v=>v],
+  ["layerWeight","weight",v=>Number(v)],
+  ["layerTracking","tracking",v=>clamp(Number(v)||0,-2,20)],
+  ["layerAlign","align",v=>v],
+  ["layerOutline","outline",v=>Number(v)],
+  ["layerOutlineColor","outline_color",v=>v],
+  ["layerBackgroundColor","background_color",v=>v],
+  ["layerOpacity","opacity",v=>Number(v)],
+  ["sensorPrefix","prefix",v=>v.slice(0,60)],
+  ["sensorSuffix","suffix",v=>v.slice(0,30)],
+  ["sensorDecimals","precision",v=>Number(v)]
+]){
+  $(id).addEventListener("input",()=>{
+    if(selectedOverlay<0)return;
+    const selected=overlays[selectedOverlay];
+    if(key==="metric"){
+      const old=defaultSensorText(selected.metric);
+      const next=defaultSensorText($(id).value);
+      if(selected.prefix===old.prefix) selected.prefix=next.prefix;
+      if(selected.suffix===old.suffix) selected.suffix=next.suffix;
+    }
+    selected[key]=convert($(id).value);
+    if(key==="metric")selectOverlay(selectedOverlay);
+    else renderLayerList();
+    changed();
+  });
+}
+for(const [id,key] of [
+  ["layerItalic","italic"],["layerShadow","shadow"],
+  ["layerBackground","background"]
+]){
+  $(id).addEventListener("change",()=>{
+    if(selectedOverlay<0)return;
+    overlays[selectedOverlay][key]=$(id).checked;
+    changed();
+  });
+}
+
+$("bench").onclick=async()=>{
+  if(busy || $("transport").value==="device" || ((!media || dirty) && !exampleFound))return;
+  try{
+    await api("benchmark",{method:"POST",json:{
+      id:media?.id||null,mount_ccw:Number($("mount").value),
+      transport:$("transport").value
+    }});
+    busy=true;refreshButtons();message("测速会显示彩色 TEST 标记并恢复原图，请观察屏幕。");
+  }catch(e){message(e.message,true);}
+};
+async function pollSensors(){
+ try{
+   sensorValues=(await api("sensors")).values;
+   if(sourceReady&&$("screen").classList.contains("live-edit"))drawEditor();
+ }catch(_){}
+}
+// Free crop: pointer dragging, touch pinch and wheel zoom in the circular mask.
+const localXY = e => {
+  const rect = layer.getBoundingClientRect();
+  return {x: (e.clientX-rect.left)*480/rect.width,
+          y: (e.clientY-rect.top)*480/rect.height};
+};
+layer.addEventListener("pointerdown", e => {
+  if (!sourceReady || ($("fit").value !== "free" && overlays.length===0)) return;
+  e.preventDefault();
+  layer.setPointerCapture(e.pointerId);
+  const point=localXY(e);
+  pointers.set(e.pointerId,point);
+  let hit=-1;
+  for(let i=overlays.length-1;i>=0;i--){
+    const o=overlays[i],label=overlayText(o);
+    const approximateWidth=Math.max(32,label.length*o.size*.75);
+    if(point.x>=o.x-10&&point.x<=o.x+approximateWidth+10&&
+       point.y>=o.y-10&&point.y<=o.y+o.size+12){hit=i;break;}
+  }
+  if(hit>=0){
+    selectOverlay(hit);
+    pointerMode="overlay";
+    overlayStart={x:point.x,y:point.y,ox:overlays[hit].x,oy:overlays[hit].y};
+    dragPoint=null;pinch=null;
+  } else if ($("fit").value==="free" && !(busy && $("transport").value==="device")) {
+    pointerMode="crop";
+    if(pointers.size===1){
+      dragPoint = {x:e.clientX,y:e.clientY,ox:cropX,oy:cropY};
+      pinch = null;
+    }
+  } else { pointerMode=null; }
+  if (pointerMode==="crop" && pointers.size === 2) {
+    const [a,b] = [...pointers.values()];
+    pinch = {distance: Math.hypot(a.x-b.x,a.y-b.y), zoom:Number($("zoom").value)};
+    dragPoint = null;
+  }
+});
+layer.addEventListener("pointermove", e => {
+  if (!pointers.has(e.pointerId)) return;
+  e.preventDefault();
+  pointers.set(e.pointerId, localXY(e));
+  if(pointerMode==="overlay"&&selectedOverlay>=0&&overlayStart){
+    const o=overlays[selectedOverlay],position=localXY(e);
+    o.x=clamp(Math.round(overlayStart.ox+position.x-overlayStart.x),0,479);
+    o.y=clamp(Math.round(overlayStart.oy+position.y-overlayStart.y),0,479);
+    $("layerX").value=o.x;$("layerY").value=o.y;
+    changed();
+  } else if (pointerMode==="crop" && pointers.size === 2 && pinch) {
+    const [a,b] = [...pointers.values()];
+    const distance = Math.hypot(a.x-b.x,a.y-b.y);
+    setZoom(pinch.zoom * distance / Math.max(1,pinch.distance));
+  } else if (pointerMode==="crop" && pointers.size === 1 && dragPoint) {
+    const rect = layer.getBoundingClientRect();
+    cropX = clamp(dragPoint.ox+(e.clientX-dragPoint.x)*480/rect.width, -960, 960);
+    cropY = clamp(dragPoint.oy+(e.clientY-dragPoint.y)*480/rect.height, -960, 960);
+    changed();
+  }
+});
+function pointerFinish(e) {
+  pointers.delete(e.pointerId);
+  dragPoint=null; pinch=null;overlayStart=null;pointerMode=null;
+  try { layer.releasePointerCapture(e.pointerId); } catch(_){}
+}
+for (const event of ["pointerup", "pointercancel", "lostpointercapture"]) {
+  layer.addEventListener(event,pointerFinish);
+}
+layer.addEventListener("wheel", e => {
+  if(busy && $("transport").value==="device")return;
+  if ($("fit").value !== "free" || !sourceReady) return;
+  e.preventDefault();
+  setZoom(Number($("zoom").value) * (e.deltaY < 0 ? 1.08 : 1/1.08));
+}, {passive:false});
+layer.addEventListener("dblclick", () => {
+  if(busy && $("transport").value==="device")return;
+  cropX=0;cropY=0;setZoom(1);
+});
+
+$("render").onclick=()=>renderNow(true);
+$("send").onclick = async () => {
+  if (!media || busy || dirty) return;
+    try {
+    await api("send",{method:"POST",json:{id:media.id,mount_ccw:Number($("mount").value),policy:$("playPolicy").value,transport:$("transport").value}});
+    busy = true; refreshButtons();
+    message("正在通过 USB 发送…");
+  } catch(e) {message(e.message,true);}
+};
+$("stop").onclick = async() => {
+  try {const result=await api("stop",{method:"POST",json:{}});message(result.message);}
+  catch(e){message(e.message,true);}
+};
+$("reconnect").onclick = async () => {
+  if (busy && lastJobState!=="retrying") return;
+  try {
+    const result=await api("reconnect",{method:"POST",json:{}});
+    message(result.message);
+    if(!result.queued){busy=true;lastJobState="reconnecting";refreshButtons();}
+  } catch(e){message(e.message,true);}
+};
+async function refreshDevice() {
+  try {
+    const d = await api("device");
+    $("deviceDot").classList.toggle("online",d.awake);
+    $("deviceText").textContent=d.connected?"已连接 · 会话保持中":
+      d.awake?(d.last_error?"USB 在线 · 握手/发送异常":"USB 在线 · 等待握手"):"屏幕当前未唤醒";
+  } catch(e) { $("deviceText").textContent = "设备检测失败"; }
+}
+function showDeviceCheck(details,notice="") {
+  const parts=[notice];
+  if(details.usb_id)parts.push("USB "+details.usb_id);
+  if(details.present===false)parts.push("未发现屏幕设备");
+  if(details.serial)parts.push("序列号 "+details.serial);
+  if(details.bus!==null && details.bus!==undefined)parts.push(`总线 ${details.bus} / 地址 ${details.address}`);
+  if(details.display_id)parts.push("固件 "+details.display_id);
+  if(details.handshake===true)parts.push("HELLO 握手成功");
+  if(details.handshake===false)parts.push("HELLO 握手失败");
+  if(details.error)parts.push("错误："+details.error);
+  $("deviceCheck").textContent=parts.filter(Boolean).join(" · ");
+  $("deviceCheck").className="mini"+(details.error?" err":"");
+}
+$("refresh").onclick = async()=>{
+  try {
+    const result=await api("device/check",{method:"POST",json:{}});
+    showDeviceCheck(result.device,result.message);
+    if(result.checking){busy=true;lastJobState="checking";refreshButtons();}
+  } catch(error){$("deviceCheck").textContent="检测失败："+error.message;}
+};
+async function pollJob() {
+  try {
+    const state = await api("status");
+    const previousState=lastJobState;
+    lastJobState=state.state;
+    busy = ["running","benchmark","live","retrying","reconnecting","checking","preparing","uploading"].includes(state.state);
+    refreshButtons();
+    $("jobState").textContent = ({
+      running:"发送中",benchmark:"测速中",live:"实时监控中",retrying:"等待恢复",
+      reconnecting:"复位 / 握手中",checking:"设备检测中",
+      preparing:"准备设备视频",uploading:"上传至屏幕",
+      done:"已完成",error:"发送失败",blocked:"速度不足",
+      stopped:"已停止",idle:"待机"
+    })[state.state] || state.state;
+    if (state.state !== "idle" &&
+        (state.state !== previousState || busy || state.message !== $("jobMessage").textContent)) {
+      message(state.message,state.state==="error");
+    }
+    if(state.benchmark && state.transport!=="device"){
+      const b=state.benchmark;
+      const fmt=n=>(n/1024/1024).toFixed(2);
+      $("benchResults").textContent=`固定 ${b.mode} 模式 · ${b.source||"当前画面"} · 仅该协议 ${fmt(b.bps)} MiB/s · ${b.samples.map(x=>x.size+"px "+(x.stage==="show"?"变化":"还原")+" "+Math.round(x.seconds*1000)+"ms").join(" / ")}`;
+      if(b.note) $("benchHint").textContent=b.note;
+    }
+    if(state.estimate?.safe_fps!==undefined && state.transport!=="device"){
+      const e=state.estimate;
+      $("benchHint").textContent=`性能预检：需求 ${e.requested_fps} FPS，保守估计 ${e.safe_fps} FPS。${e.effective_fps?("实际采用 "+e.effective_fps+" FPS"):"严格模式已阻止超限播放"}。`;
+    }
+    if(state.frame_hash){
+      $("frameStats").textContent=`画面 SHA256: ${state.frame_hash} · ${state.changed_pixels===null?"首次全屏":state.changed_pixels+" 处像素变化"} · ${state.regions} 区域 · ${state.method||"—"}`;
+    }
+    if(state.transport==="device"){
+      $("benchResults").textContent="内部 MCU 播放 · 背景由屏幕刷新 · 电脑只更新额外图层";
+      const overlayMethod=({"overlay-full":"整层初始化","overlay-delta":"差分更新","skip":"无像素变化"})[state.method]||"等待初始化";
+      $("frameStats").textContent=state.state==="uploading"
+        ? `背景文件已上传 ${(state.bytes/1024).toFixed(1)} KiB`
+        : `${overlayMethod} · 本次发送 ${((state.overlay_last_bytes||0)/1024).toFixed(2)} KiB · 像素记录 ${state.overlay_pixel_bytes||0} B · 可见表 ${state.overlay_poslen_bytes||0} B · ${state.changed_pixels??0} 像素变化 · 累计发送 ${(state.bytes/1024).toFixed(1)} KiB`;
+      const interval=state.overlay_interval_ms==null?"实际间隔待采样":`实际平均间隔 ${(state.overlay_interval_ms/1000).toFixed(2)} 秒`;
+      const timings=state.overlay_transfer_ms==null?"":` · 写入 ${state.overlay_transfer_ms} ms · 等待 ${state.overlay_wait_ms} ms · 编码 ${state.overlay_encode_ms} ms`;
+      const background=state.media_kind==="image"?"屏幕静态图片背景":
+        state.media_kind==="video"?`设备视频编码 ${state.requested_fps} FPS（非实测）`:"内部 MCU 刷新待发送";
+      $("playbackStats").textContent=`${background} · 图层目标间隔 1 秒 · ${interval}${timings}`;
+    }else if(state.requested_fps!==null && state.requested_fps!==undefined){
+      const planned=state.fps?`预检采用 ${state.fps} FPS`:"等待传输预检";
+      const measured=state.actual_fps!==null && state.actual_fps!==undefined?`实测 ${state.actual_fps} FPS`:"实测帧率待采样";
+      const paused=["retrying","reconnecting","error","blocked","stopped"].includes(state.state)?" · 当前未发送":"";
+      $("playbackStats").textContent=`GIF / 视频目标 ${state.requested_fps} FPS · ${planned} · ${measured}${paused}`;
+    }else{
+      $("playbackStats").textContent="GIF / 视频目标帧率可在左侧设置；发送后显示预检和实测帧率。";
+    }
+    if(state.device_check)showDeviceCheck(state.device_check);
+    $("retryNotice").style.display=state.error_count?"block":"none";
+    if(state.error_count){
+      const phase=({waiting:`${state.retry_in} 秒后重试`,usb_reset:"正在复位屏幕 USB",handshake:"正在执行 HELLO 握手"})[state.recovery_phase]||"";
+      const lastSuccess=state.last_write_at?" · 最近成功发送 "+new Date(state.last_write_at*1000).toLocaleTimeString():"";
+      $("retryNotice").textContent=`已记录 ${state.error_count} 次异常 · 最近一次：${state.last_error}。${phase}${lastSuccess}`;
+    }
+    $("progress").style.width =
+      (state.total > 0 ? Math.min(100,100*state.progress/state.total) : 0)+"%";
+  } catch(_){}
+}
+
+async function loadExample(){
+  try{
+    const info=await api("example");
+    exampleFound=!!info.found;
+    refreshButtons();
+  }catch(err){
+    exampleFound=false;
+    refreshButtons();
+  }
+}
+
+async function loadDesktop() {
+  try {
+    const data=await api("desktop");
+    if(!data.available)return;
+    $("desktopSettings").style.display="flex";
+    desktopOptions=data.settings;
+    $("startAtLogin").checked=desktopOptions.start_at_login;
+    $("silentStart").checked=desktopOptions.silent_start;
+    $("desktopNotice").textContent=data.tray_available
+      ? "启动后自动恢复上次发送；关闭窗口后继续运行，托盘右键「退出」结束程序。"
+      : "后台运行中，正在等待系统托盘。日志："+data.log_path;
+  } catch(error) { console.warn("Desktop settings unavailable",error); }
+}
+async function saveDesktopOptions() {
+  const controls=[$("startAtLogin"),$("silentStart")];
+  controls.forEach(el=>el.disabled=true);
+  try {
+    const data=await api("desktop",{method:"POST",json:{
+      start_at_login:$("startAtLogin").checked,silent_start:$("silentStart").checked
+    }});
+    desktopOptions=data.settings;
+    $("desktopNotice").textContent="启动设置已保存；关闭窗口后继续运行，托盘右键「退出」结束程序。";
+  } catch(error) {
+    $("startAtLogin").checked=desktopOptions?.start_at_login||false;
+    $("silentStart").checked=desktopOptions?.silent_start||false;
+    $("desktopNotice").textContent="保存启动设置失败："+error.message;
+  } finally { controls.forEach(el=>el.disabled=false); }
+}
+$("startAtLogin").onchange=saveDesktopOptions;
+$("silentStart").onchange=saveDesktopOptions;
+$("hideToTray").onclick=async()=>{
+  try { await api("desktop/hide",{method:"POST",json:{}}); }
+  catch(error) {message(error.message,true);}
+};
+
+async function initialize() {
+  try {
+    csrf=(await api("token")).token;
+    await reloadFonts();
+    await loadWorkspace();
+    await loadDesktop();
+  }catch(error){
+    message("配置恢复失败："+error.message,true);
+    setSaveLabel("配置恢复失败","error");
+  }
+  refreshDevice();pollJob();pollSensors();showFree();renderLayerList();
+  loadExample();
+  setInterval(pollJob,900);
+  setInterval(refreshDevice,8500);
+  setInterval(pollSensors,1000);
+  setInterval(loadExample,15000);
+}
+initialize();
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
