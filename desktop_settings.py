@@ -94,6 +94,11 @@ def register_desktop_entry():
             "Exec=" + desktop_exec([*launch_command(), "--show"]) + "\n"
             "Icon=" + str(RESOURCE_ROOT / "static/turing-studio.svg") + "\n"
             "Terminal=false\nCategories=Utility;HardwareSettings;\nStartupWMClass=TuringStudio\n")
-    entry.write_text(text, encoding="utf-8")
+    temp = entry.with_suffix(".desktop.tmp")
+    try:
+        temp.write_text(text, encoding="utf-8")
+        os.replace(temp, entry)
+    finally:
+        temp.unlink(missing_ok=True)
     sync_autostart()
     return entry

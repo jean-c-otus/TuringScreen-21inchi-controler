@@ -15,7 +15,7 @@
 
 ## 运行
 
-桌面打包版、登录启动、静默启动、托盘及自动恢复说明见 [DESKTOP.md](DESKTOP.md)。
+下载打包版请先看[安装教程](INSTALL.md)。登录启动、静默启动、托盘及自动恢复的详细说明见 [DESKTOP.md](DESKTOP.md)。
 
 ```bash
 sudo pacman -S --needed python python-pip libusb ffmpeg

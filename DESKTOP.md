@@ -7,6 +7,8 @@ USB 权限规则随包提供为 `99-turing-studio.rules`。“安装 / 更新”
 
 ## 安装与迁移
 
+下载、依赖准备、校验、安装与卸载的完整步骤见 [INSTALL.md](INSTALL.md)。
+
 进入安装包目录 `dist/installer/` 执行：
 
 ```sh
@@ -32,6 +34,7 @@ USB 权限规则随包提供为 `99-turing-studio.rules`。“安装 / 更新”
 在 `install.sh` 中选择 `1` 安装/更新时，会自动完成规则校验、安装和重载。
 系统目录需要管理员权限时会调用 sudo；请直接运行 `./install.sh`，无需给整个脚本加 sudo。
 如果权限认证、规则校验、安装或重载失败，脚本会中止，并保留此前安装的程序。
+注册入口等后续步骤失败时，脚本恢复原程序、桌面入口、登录启动入口和命令链接；首次安装失败则移除新程序及新入口。导入成功的数据及已安装的独立 USB 规则会保留。
 安装成功后可以卸载 InfoPanel，系统规则不依赖其安装包。
 
 需要单独配置权限时，也可以手动执行：
@@ -101,9 +104,12 @@ GIF / 视频帧率设置始终可见，修改并重新渲染后用于下一次�
 .venv/bin/python -m pip install -r requirements-build.txt
 .venv/bin/python desktop.py
 .venv/bin/python packaging/build.py
+# 正式发布需先提交全部源码，再指定版本：
+.venv/bin/python packaging/build.py --version v0.1.0
 ```
 
 最终目录为 `dist/installer/`，对应压缩包为 `dist/installer.tar.gz`，附带 SHA256 校验和。
+安装包附带 `INSTALL.md`；`build-info.json` 记录版本、源码提交、构建平台和依赖版本。
 PyInstaller 中间产物位于 `build/pyinstaller-dist/`，不再与最终安装包放在一起。
 当前构建面向本机 Arch Linux x86_64，不保证兼容其他发行版或更旧的系统库。
 源码统一通过 `.venv/bin/python desktop.py` 启动；`app.py` 作为后端模块由桌面程序管理。
